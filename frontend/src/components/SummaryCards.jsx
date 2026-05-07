@@ -20,16 +20,26 @@ const METRIC_ROW = {
 export default function SummaryCards({ windowDays }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     api.getSummary(windowDays)
       .then(r => setData(r.data))
-      .catch(console.error)
+      .catch(e => setError(e?.response?.data?.detail || e.message))
       .finally(() => setLoading(false));
   }, [windowDays]);
 
   if (loading) return <div style={{ color: '#888', marginBottom: '24px' }}>Loading metrics…</div>;
+  if (error) return (
+    <div style={{
+      color: '#991b1b', background: '#fef2f2', border: '1px solid #fecaca',
+      borderRadius: '8px', padding: '10px 14px', marginBottom: '24px', fontSize: '13px',
+    }}>
+      ❌ Could not load metrics: {error}
+    </div>
+  );
   if (!data) return null;
 
   const hitPct = (data.hit_rate * 100).toFixed(1);
