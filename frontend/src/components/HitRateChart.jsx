@@ -16,16 +16,31 @@ const CARD = {
 export default function HitRateChart({ windowDays }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     api.getHitRateByMonth(windowDays)
       .then(r => setData(r.data.data || []))
-      .catch(console.error)
+      .catch(e => setError(e?.response?.data?.detail || e.message))
       .finally(() => setLoading(false));
   }, [windowDays]);
 
   if (loading) return <div style={{ color: '#888' }}>Loading chart…</div>;
+  if (error) return (
+    <div style={CARD}>
+      <h3 style={{ margin: '0 0 16px', fontSize: '16px', fontWeight: 600 }}>
+        Hit Rate by Month ({windowDays}d window)
+      </h3>
+      <p style={{
+        color: '#991b1b', background: '#fef2f2', border: '1px solid #fecaca',
+        borderRadius: '8px', padding: '10px 14px', fontSize: '13px',
+      }}>
+        ❌ Could not load chart data: {error}
+      </p>
+    </div>
+  );
 
   const chartData = data.map(d => ({
     month: d.month,

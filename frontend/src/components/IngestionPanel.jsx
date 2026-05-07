@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { api } from '../api';
 
+const IS_STATIC_DEPLOY =
+  import.meta.env.PROD && !import.meta.env.VITE_API_BASE_URL;
+
 const BTN = {
   padding: '8px 18px', borderRadius: '8px', border: 'none',
   cursor: 'pointer', fontWeight: 600, fontSize: '14px',
@@ -46,45 +49,58 @@ export default function IngestionPanel({ onRefresh }) {
       boxShadow: '0 1px 4px rgba(0,0,0,0.10)', marginBottom: '24px',
     }}>
       <h3 style={{ margin: '0 0 12px', fontSize: '16px', fontWeight: 600 }}>⚡ Pipeline Controls</h3>
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-        <label style={{ fontSize: '13px' }}>
-          Posts limit:{' '}
-          <input
-            type="number" min="1" max="50" value={limit}
-            onChange={e => setLimit(+e.target.value)}
-            style={{ width: '60px', padding: '4px 6px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '13px' }}
-          />
-        </label>
-        <button
-          style={{ ...BTN, background: loading ? '#94a3b8' : '#6366f1', color: '#fff' }}
-          onClick={trigger} disabled={loading}
-        >
-          {loading ? 'Running…' : '🚀 Run Ingestion Pipeline'}
-        </button>
-        <button
-          style={{ ...BTN, background: loading ? '#94a3b8' : '#0ea5e9', color: '#fff' }}
-          onClick={recompute} disabled={loading}
-        >
-          🔄 Recompute Scores
-        </button>
-      </div>
+      {IS_STATIC_DEPLOY ? (
+        <div style={{
+          marginTop: '4px', padding: '10px 14px', background: '#eff6ff',
+          borderRadius: '8px', fontSize: '13px', color: '#1e40af',
+          border: '1px solid #bfdbfe',
+        }}>
+          ℹ️ <strong>Demo deployment:</strong> Pipeline controls require a running backend.
+          Deploy a backend and set the <code>VITE_API_BASE_URL</code> environment variable to its URL, then redeploy to enable these features.
+        </div>
+      ) : (
+        <>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <label style={{ fontSize: '13px' }}>
+              Posts limit:{' '}
+              <input
+                type="number" min="1" max="50" value={limit}
+                onChange={e => setLimit(+e.target.value)}
+                style={{ width: '60px', padding: '4px 6px', borderRadius: '6px', border: '1px solid #d1d5db', fontSize: '13px' }}
+              />
+            </label>
+            <button
+              style={{ ...BTN, background: loading ? '#94a3b8' : '#6366f1', color: '#fff' }}
+              onClick={trigger} disabled={loading}
+            >
+              {loading ? 'Running…' : '🚀 Run Ingestion Pipeline'}
+            </button>
+            <button
+              style={{ ...BTN, background: loading ? '#94a3b8' : '#0ea5e9', color: '#fff' }}
+              onClick={recompute} disabled={loading}
+            >
+              🔄 Recompute Scores
+            </button>
+          </div>
 
-      {result && (
-        <div style={{
-          marginTop: '12px', padding: '10px 14px', background: '#f0fdf4',
-          borderRadius: '8px', fontSize: '13px', color: '#166534'
-        }}>
-          ✅ Fetched <b>{result.fetched}</b> posts | New: <b>{result.new}</b> |
-          Processed: <b>{result.processed}</b> recs | Scored: <b>{result.scored}</b>
-        </div>
-      )}
-      {error && (
-        <div style={{
-          marginTop: '12px', padding: '10px 14px', background: '#fef2f2',
-          borderRadius: '8px', fontSize: '13px', color: '#991b1b'
-        }}>
-          ❌ Error: {error}
-        </div>
+          {result && (
+            <div style={{
+              marginTop: '12px', padding: '10px 14px', background: '#f0fdf4',
+              borderRadius: '8px', fontSize: '13px', color: '#166534'
+            }}>
+              ✅ Fetched <b>{result.fetched}</b> posts | New: <b>{result.new}</b> |
+              Processed: <b>{result.processed}</b> recs | Scored: <b>{result.scored}</b>
+            </div>
+          )}
+          {error && (
+            <div style={{
+              marginTop: '12px', padding: '10px 14px', background: '#fef2f2',
+              borderRadius: '8px', fontSize: '13px', color: '#991b1b'
+            }}>
+              ❌ Error: {error}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
