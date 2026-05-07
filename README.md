@@ -4,6 +4,30 @@
 
 ---
 
+## Screenshots
+
+### Dashboard — with 20 sample recommendations loaded
+
+![Dashboard with data](docs/screenshots/dashboard_full.png)
+
+### Dashboard — 30-day evaluation window
+
+![Dashboard 30d window](docs/screenshots/dashboard_30d.png)
+
+### Recommendations List
+
+![Recommendations list](docs/screenshots/recommendations_list.png)
+
+### Pipeline Ingestion Result
+
+![Pipeline result](docs/screenshots/pipeline_result.png)
+
+### Test Suite — 51/51 Passing
+
+![Test results](docs/screenshots/test_results.png)
+
+---
+
 ## Architecture Overview
 
 ```
