@@ -1,0 +1,1 @@
+"""RecoScoreApp backend package."""
